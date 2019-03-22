@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <algorithm>
 
 #define MAX_N 1024
 
@@ -9,7 +10,7 @@ int father[MAX_N];
 int GetFather(int a)
 {
     int b = a;
-    while (a != father[a])
+    while (father[a] > 0)
         a = father[a];
     // Optimization
     while (b != a)
@@ -23,14 +24,18 @@ int GetFather(int a)
 
 void Union(int a, int b)
 {
-    if (GetFather[a] != GetFather[b])
-        father[GetFather(a)] = GetFather(b);
+    int fa = GetFather(a);
+    int fb = GetFather(b);
+    if (fa != fb)
+    {
+        father[fb] += father[fa];
+        father[fa] = fb;
+    }
 }
 
 int main()
 {
-    for (int i = 0; i < MAX_N; i++)
-        father[i] = i;
+    fill_n(father, MAX_N, -1);
 
     Union(1, 2);
     Union(3, 4);
