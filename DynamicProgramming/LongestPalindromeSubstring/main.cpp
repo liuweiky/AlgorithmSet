@@ -1,42 +1,43 @@
-#include <cstdio>
-#include <cstring>
+#include <iostream>
 #include <algorithm>
 
-#define MAX_LEN 1024
+#define MAX_N 1024
 
 using namespace std;
 
-char str[MAX_LEN];
-int dp[MAX_LEN][MAX_LEN];
-int len;
+bool dp[MAX_N][MAX_N];
+string str;
 
 int main()
 {
-    gets(str);
-    len = strlen(str);
-
-    for (int i = 0; i < len; i++)
-    {
-        dp[i][i] = 1;
-        if (i != 0 && str[i - 1] == str[i])
-            dp[i - 1][i] = 2;
-    }
+    cin >> str;
 
     int ans = 1;
 
-    for (int k = 2; k <= len; k++)
+    for (int i = 0; i < str.size(); i++)
     {
-        for (int j = 0; j + k < len; j++)
+        dp[i][i] = true;
+        if (i != 0 && str[i - 1] == str[i])
         {
-            if (str[j] == str[j + k])
-                dp[j][j + k] = dp[j + 1][j + k - 1] + 2;
-            else
-                dp[j][j + k] = 0;
-            ans = max(ans, dp[j][j + k]);
+            dp[i - 1][i] = true;
+            ans = 2;
         }
     }
 
-    printf("%d", ans);
+
+    for (int len = 2; len < str.size(); len++)
+    {
+        for (int i = 0; i + len < str.size(); i++)
+        {
+            if (str[i] == str[i + len] && dp[i + 1][i + len - 1])
+            {
+                dp[i][i + len] = true;
+                ans = max(ans, len + 1);
+            }
+        }
+    }
+
+    cout << ans;
 
     return 0;
 }
